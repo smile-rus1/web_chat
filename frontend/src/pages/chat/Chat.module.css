@@ -1,0 +1,133 @@
+.layout {
+  display: flex;
+  height: 100vh;
+  background: #908f8f;
+}
+
+/* Sidebar */
+
+.sidebar {
+  width: 320px;
+  background: rgb(124, 122, 122);
+  border-right: 1px solid #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdownItemLink {
+  text-decoration: none;
+  color: black;
+  
+}
+
+.dropdownItemLink:link {
+  text-decoration: none;
+  color: black;
+}
+
+.topBar {
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.menuButton {
+  font-size: 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.dropdownWrapper {
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  top: 35px;
+  left: 0;
+  background: rgb(181, 175, 175);
+  border: 1px solid #353434;
+  border-radius: 8px;
+  width: 150px;
+  box-shadow: 0 5px 15px rgba(177, 175, 175, 0.899);
+}
+
+.dropdownItem {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdownItem:hover {
+  background: #a7c6ef;
+}
+
+.search {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.chatList {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.chatItem {
+  padding: 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.chatItem:hover {
+  background: #9fb0ed;
+}
+
+.active {
+  background: #aaafeb;
+}
+
+/* Chat area */
+
+.chatArea {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chatContent {
+  width: 100%;
+  max-width: 600px;
+}
+
+.noChat {
+  font-size: 18px;
+  color: #888;
+}
+
+.placeholder {
+  margin-top: 20px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: 40%;
+  }
+
+  .chatArea {
+    height: 60%;
+  }
+}
