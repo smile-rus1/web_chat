@@ -13,6 +13,7 @@ frontend/dist
 frontend/dist-ssr
 frontend/*.local
 frontend/.env
+frontend/README.md
 
 # Editor
 frontend/.vscode/*
