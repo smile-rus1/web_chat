@@ -40,7 +40,7 @@ class CreateAccount(AccountUseCase):
         if account_data is None:
             raise InvalidSecretCode()
 
-        account_data = json.loads(await redis_db.get(token))
+        account_data = json.loads(account_data)
         account = Account(
             username=account_dto.username,
             first_name=account_dto.first_name,

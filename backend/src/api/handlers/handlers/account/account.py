@@ -113,7 +113,7 @@ async def update_account(
     response_model=ResponseAccountVM
 )
 @login_required
-async def get_account(
+async def get_account_by_id(
         account_id: int,
         auth: TokenAuthDep,
         account_service: AccountService = Depends(account_service_provider),

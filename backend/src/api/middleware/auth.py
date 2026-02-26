@@ -1,7 +1,7 @@
 from fastapi import WebSocket
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
-from starlette.requests import Request
 from starlette.responses import Response
+from fastapi import Request
 
 from src.api.providers.auth import get_jwt_token_auth
 from src.core.config_reader import config

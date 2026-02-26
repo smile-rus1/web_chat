@@ -14,6 +14,7 @@ def build_tm(
     return TransactionManager(
         session=session,
         account_repo=repo.AccountRepo,
+        chat_repo=repo.ChatRepo,
     )
 
 

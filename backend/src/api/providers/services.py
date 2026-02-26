@@ -6,6 +6,8 @@ from src.interfaces.infrastructure.redis_db import IRedisDB
 from src.interfaces.services.transaction_manager import IBaseTransactionManager
 from src.services.services.account.account import AccountService
 from src.services.services.account.auth import AuthService
+from src.services.services.chat.chat import ChatService
+from src.services.services.chat.message import MessageService
 from src.services.services.files_work.files_work import FilesWorkService
 
 
@@ -15,6 +17,23 @@ def account_service_getter(
 ):
 
     return AccountService(tm=tm, redis_db=redis_db)
+
+
+def chat_service_getter(
+        tm: IBaseTransactionManager = Depends(tm_provider),
+        redis_db: IRedisDB = Depends(redis_db_provider)
+):
+    return ChatService(tm=tm, redis_db=redis_db)
+
+
+def message_service_getter(
+        tm: IBaseTransactionManager = Depends(tm_provider),
+        redis_db: IRedisDB = Depends(redis_db_provider)
+):
+    return MessageService(
+        tm=tm,
+        redis_db=redis_db
+    )
 
 
 def auth_service_getter(

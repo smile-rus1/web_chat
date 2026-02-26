@@ -3,6 +3,7 @@ from typing import Type
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.interfaces.infrastructure.repo.account_repo import IAccountRepo
+from src.interfaces.infrastructure.repo.chat_repo import IChatRepo
 from src.interfaces.services.transaction_manager import IBaseTransactionManager
 
 
@@ -22,6 +23,8 @@ class TransactionManager(BaseTransactionManager):
             self,
             session: AsyncSession,
             account_repo: Type[IAccountRepo],
+            chat_repo: Type[IChatRepo]
     ):
         super().__init__(session=session)
         self.account_repo = account_repo(session=session)  # type: ignore
+        self.chat_repo = chat_repo(session=session)  # type: ignore

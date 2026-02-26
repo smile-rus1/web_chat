@@ -19,6 +19,7 @@ def config_loader() -> Config:
             host=os.getenv("WEB_HOST", "localhost"),
             debug=bool(os.getenv("DEBUG")),
             api_v1_str="/api/" + os.getenv("API_VERSION", "v1"),
+            allowed_origins=os.getenv("ALLOWED_ORIGINS", "").split(",")
         ),
         db=DBConfig(
             host=os.getenv("DB_HOST"),

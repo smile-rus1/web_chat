@@ -17,3 +17,6 @@ class RedisDB(IRedisDB):
 
     async def exists(self, key: str) -> bool:
         return bool(await self._redis.exists(key))
+
+    async def delete(self, key: str) -> None:
+        return await self._redis.delete(key)

@@ -7,3 +7,4 @@ class WebConfig:
     port: int
     debug: bool
     api_v1_str: str
+    allowed_origins: list[str]

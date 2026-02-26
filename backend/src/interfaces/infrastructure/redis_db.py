@@ -12,5 +12,9 @@ class IRedisDB(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
+    async def delete(self, key: str) -> None:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     async def exists(self, key: str) -> bool:
         raise NotImplementedError

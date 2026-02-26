@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import Integer, String, Boolean, DateTime, func
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 from src.infrastructure.db.models.base import Base
 
@@ -45,3 +45,9 @@ class AccountDB(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=True, default=func.now(), onupdate=func.now())
     image_url: Mapped[str] = mapped_column(String(255), nullable=True)
+
+    chats: Mapped[list["ChatDB"]] = relationship(  # type: ignore
+        "ChatDB",
+        secondary="chat_participants",
+        back_populates="participants"
+    )
