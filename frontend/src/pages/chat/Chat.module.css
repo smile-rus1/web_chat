@@ -115,6 +115,63 @@
   border-radius: 12px;
 }
 
+
+.chatDropdown {
+  position: fixed;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.chatDropdown button {
+  padding: 8px 12px;
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chatDropdown button:hover {
+  background: #eee;
+}
+
+/* Модалка */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 350px;
+  text-align: center;
+}
+
+.modalActions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.modalActions button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
 /* Mobile */
 
 @media (max-width: 768px) {
@@ -130,4 +187,90 @@
   .chatArea {
     height: 60%;
   }
+}
+
+.messages {
+  margin-top: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.message {
+  background: white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  max-width: 70%;
+  position: relative;
+}
+
+.msgDropdown {
+  position: absolute;
+  top: 0;
+  right: -110px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  z-index: 1000;
+}
+
+.msgDropdown button {
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.msgDropdown button:hover {
+  background: #eee;
+}
+
+.inputArea {
+  display: flex;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.inputArea input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+}
+
+.inputArea button {
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: none;
+  background: #4a90e2;
+  color: white;
+  cursor: pointer;
+}
+
+.myMessage { align-self: flex-end; }
+.otherMessage { align-self: flex-start; }
+
+.editingMessage {
+  border: 2px solid #4a90e2;
+  background: #eaf3ff;
+}
+
+.editedLabel {
+  font-size: 11px;
+  color: #777;
+  margin-top: 4px;
+}
+
+.cancelEdit {
+  background: #ff5f5f;
+  color: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  border: none;
+  cursor: pointer;
 }
