@@ -6,7 +6,12 @@ from abc import ABC
 from loguru import logger
 
 from src.dto.db.account.account import Account
-from src.dto.services.account.account import CreateAccountDTO, AccountDTO, UpdateAccountDTO
+from src.dto.services.account.account import (
+    CreateAccountDTO,
+    AccountDTO,
+    UpdateAccountDTO,
+    SearchAccountDTO
+)
 from src.infrastructure.exceptions.account.account import (
     AccountNotFoundByPhone,
     BaseAccountException,
@@ -20,7 +25,8 @@ from src.services.exceptions.acc import (
     AccountAlreadyExistService,
     AccountAlreadyExistsWithPhoneNumberService,
     BaseServiceAccountExceptions,
-    InvalidSecretCode, AccountNotFoundByIDService
+    InvalidSecretCode,
+    AccountNotFoundByIDService
 )
 
 
@@ -209,6 +215,30 @@ class DeleteAccount(AccountUseCase):
         await self._tm.commit()
 
 
+class SearchAccounts(AccountUseCase):
+    async def __call__(self, dto: SearchAccountDTO) -> list[AccountDTO]:
+        account = Account(
+            account_id=dto.account_id,
+            username=dto.username,
+            phone_number=dto.phone_number
+        )
+        results = await self._tm.account_repo.search_accounts(account, offset=dto.offset, limit=dto.limit)
+
+        return [
+            AccountDTO(
+                username=acc.username,
+                phone_number=acc.phone_number,
+                image_url=acc.image_url,
+                last_name=acc.last_name,
+                first_name=acc.first_name,
+                email=acc.email,
+                account_id=acc.account_id,
+                country=acc.country
+            )
+            for acc in results
+        ]
+
+
 class AccountService:
     def __init__(
             self,
@@ -235,3 +265,6 @@ class AccountService:
 
     async def confirm_register(self, secret_code: str) -> str:
         return await ConfirmRegister(tm=self._tm)(secret_code, self._redis_db)
+
+    async def search_accounts(self, dto: SearchAccountDTO) -> list[AccountDTO]:
+        return await SearchAccounts(tm=self._tm)(dto)

@@ -36,3 +36,10 @@ def update_account_request(
         phone_number=phone_number,
         image_url=image,
     )
+
+
+class SearchAccountsRequest(BaseModel):
+    username: str | None = None
+    phone_number: str | None = None
+    offset: int | None = None
+    limit: int | None = None

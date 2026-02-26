@@ -5,13 +5,14 @@ from fastapi import APIRouter, status, Depends, Body
 from src.api.handlers.handlers.account.requests.requests import (
     CreateAccountRequest,
     UpdateAccountRequest,
-    update_account_request
+    update_account_request,
+    SearchAccountsRequest
 )
 from src.api.handlers.handlers.account.response.reponse import ResponseAccountVM
 from src.api.permissions import login_required
 from src.api.providers.abstract.services import account_service_provider, files_work_service_provider
 from src.api.providers.auth import TokenAuthDep
-from src.dto.services.account.account import CreateAccountDTO, UpdateAccountDTO
+from src.dto.services.account.account import CreateAccountDTO, UpdateAccountDTO, SearchAccountDTO
 from src.services.services.account.account import AccountService
 from src.services.services.files_work.files_work import FilesWorkService
 
@@ -105,6 +106,41 @@ async def update_account(
         country=account.country,
         email=account.email
     )
+
+
+@account_router.get(
+    "/",
+    status_code=status.HTTP_200_OK,
+    response_model=list[ResponseAccountVM]
+)
+@login_required
+async def search_accounts(
+        auth: TokenAuthDep,
+        search: SearchAccountsRequest = Depends(),
+        account_service: AccountService = Depends(account_service_provider),
+):
+    search_dto = SearchAccountDTO(
+        account_id=auth.request.state.user.account_id,
+        username=search.username,
+        phone_number=search.phone_number,
+        offset=search.offset,
+        limit=search.limit
+    )
+    accounts = await account_service.search_accounts(search_dto)
+    models = [
+        ResponseAccountVM(
+            account_id=model.account_id,
+            username=model.username,
+            first_name=model.first_name,
+            last_name=model.last_name,
+            phone_number=model.phone_number,
+            image_url=model.image_url,
+            country=model.country,
+            email=model.email
+        )
+        for model in accounts
+    ]
+    return models
 
 
 @account_router.get(

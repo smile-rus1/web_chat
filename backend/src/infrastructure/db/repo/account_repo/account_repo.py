@@ -3,21 +3,28 @@ from dataclasses import asdict
 from loguru import logger
 from sqlalchemy import insert, select, update, delete
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.dto.db.account.account import Account
 from src.infrastructure.db.models import AccountDB
+from src.infrastructure.db.repo.account_repo.query import AccountQueryBuilder
 from src.infrastructure.exceptions.account.account import (
     AccountAlreadyExist,
     AccountNotFoundByPhone,
     AccountAlreadyExistsWithPhone,
     BaseAccountException,
-    AccountNotFoundByUsername, AccountNotFoundByID
+    AccountNotFoundByUsername,
+    AccountNotFoundByID
 )
 from src.interfaces.infrastructure.repo.account_repo import IAccountRepo
 from src.interfaces.infrastructure.sqlalchemy_repo import SqlAlchemyDAO
 
 
 class AccountRepo(SqlAlchemyDAO, IAccountRepo):
+    def __init__(self, session: AsyncSession):
+        super().__init__(session)
+        self._query_builder = AccountQueryBuilder()
+
     async def get_account_by_id(self, account_id: int) -> Account:
         account_sql = select(AccountDB).where(AccountDB.account_id == account_id)
         res = (await self._session.execute(account_sql)).scalar_one_or_none()
@@ -126,6 +133,32 @@ class AccountRepo(SqlAlchemyDAO, IAccountRepo):
     async def delete_account(self, account_id: int) -> None:
         sql = delete(AccountDB).where(AccountDB.account_id == account_id)
         await self._session.execute(sql)
+
+    async def search_accounts(self, account: Account, offset: int, limit: int) -> list[Account]:
+        sql = self._query_builder.get_query(
+            account_id=account.account_id,
+            username=account.username,
+            phone_number=account.phone_number,
+            offset=offset,
+            limit=limit
+        )
+
+        result = await self._session.execute(sql)
+        models = result.scalars().all()
+
+        return [
+            Account(
+                account_id=acc.account_id,
+                phone_number=acc.phone_number,
+                first_name=acc.first_name,
+                last_name=acc.last_name,
+                username=acc.username,
+                country=acc.country,
+                email=acc.email,
+                image_url=acc.image_url,
+            )
+            for acc in models
+        ]
 
     @staticmethod
     def _error_parser(

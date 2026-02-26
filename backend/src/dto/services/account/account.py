@@ -10,6 +10,7 @@ class AccountDTO(BaseDTO):
     last_name: str
     country: str
     phone_number: str
+    account_id: int | None = None
     email: str | None = None
     image_url: str | None = None
 
@@ -32,3 +33,12 @@ class UpdateAccountDTO(BaseDTO):
     phone_number: str | None = None
     email: str | None = None
     image_url: str | None = None
+
+
+@dataclass
+class SearchAccountDTO(BaseDTO):
+    account_id: int
+    username: str | None
+    phone_number: str | None
+    limit: int = 0
+    offset: int = 0

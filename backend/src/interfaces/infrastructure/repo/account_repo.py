@@ -19,3 +19,6 @@ class IAccountRepo:
 
     async def delete_account(self, account_id: int) -> None:
         raise NotImplementedError
+
+    async def search_accounts(self, account: Account, offset: int, limit: int) -> list[Account]:
+        raise NotImplementedError
