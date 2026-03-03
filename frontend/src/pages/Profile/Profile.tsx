@@ -2,18 +2,8 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../services/api'
 import styles from './Profile.module.css'
+import type {Account} from "../../types/account.types"
 
-interface Account {
-  account_id: number
-  username: string
-  first_name: string
-  last_name: string
-  phone_number: string
-  email: string
-  is_admin: boolean
-  is_superuser: boolean
-  image_url?: string
-}
 
 function getCookie(name: string) {
   const match = document.cookie.match(

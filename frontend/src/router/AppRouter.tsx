@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Home } from '../pages/Home/Home'
 import { Login } from '../pages/Login/Login'
 import { Register } from '../pages/Register/Register'
-import { Chat } from '../pages/Chat/Chat'
+import { ChatPage } from '../pages/Chat/ChatPage'
 import { ProtectedRoute } from '../components/ProtectedRoute'
 import { PublicRoute } from '../components/PublicRoute'
 import { Profile } from '../pages/Profile/Profile'
@@ -40,7 +40,7 @@ export const AppRouter = () => {
           path="/chat"
           element={
             <ProtectedRoute>
-              <Chat />
+              <ChatPage />
             </ProtectedRoute>
           }
         />

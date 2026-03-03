@@ -1,0 +1,206 @@
+.sidebar {
+  width: 320px;
+  background: rgb(124, 122, 122);
+  border-right: 1px solid #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdownItemLink {
+  text-decoration: none;
+  color: black;
+  
+}
+
+.dropdownItemLink:link {
+  text-decoration: none;
+  color: black;
+}
+
+.topBar {
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.menuButton {
+  font-size: 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.dropdownWrapper {
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  top: 35px;
+  left: 0;
+  background: rgb(181, 175, 175);
+  border: 1px solid #353434;
+  border-radius: 8px;
+  width: 150px;
+  box-shadow: 0 5px 15px rgba(177, 175, 175, 0.899);
+}
+
+.dropdownItem {
+  padding: 10px;
+  cursor: pointer;
+  
+}
+
+.dropdownItem a {
+  text-decoration: none;
+  color: #353434;
+}
+
+.dropdownItem:hover {
+  background: #a7c6ef;
+}
+
+.search {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.chatList {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.chatItem {
+  padding: 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.chatItem:hover {
+  background: #9fb0ed;
+}
+
+
+.activeItem {
+  background: #aaafeb;
+}
+
+.chatDropdown {
+  position: fixed;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.chatDropdown button {
+  padding: 8px 12px;
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chatDropdown button:hover {
+  background: #eee;
+}
+
+
+.chatAvatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* Chat text block */
+
+.chatInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.chatName {
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lastMessage {
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Time */
+
+.lastMessageTime {
+  font-size: 11px;
+  color: #999;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: 40%;
+  }
+}
+
+.searchWrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.search {
+  flex: 1;
+  padding: 8px 35px 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.searchButton {
+  position: absolute;
+  right: 6px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.backButton {
+  font-size: 18px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.emptyResult {
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #444;
+}

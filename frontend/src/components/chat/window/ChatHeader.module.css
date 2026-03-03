@@ -1,0 +1,45 @@
+
+.chatHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fafafa;
+}
+
+.chatHeaderAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+}
+
+.chatHeaderInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.chatHeaderName {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.chatHeaderSub {
+  font-size: 12px;
+  color: #888;
+}
+
+.chatHeaderMenu {
+  font-size: 20px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.chatHeaderMenu:hover {
+  background: #eee;
+}

@@ -1,0 +1,200 @@
+.chatArea {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chatContent {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.noChat {
+  font-size: 18px;
+  color: #888;
+}
+
+.messages {
+  margin-top: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.message {
+  background: white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  max-width: 70%;
+  position: relative;
+}
+
+.myMessage { 
+  align-self: flex-end;
+  margin: 15px;
+}
+.otherMessage { 
+  align-self: flex-start; 
+  margin: 15px;
+}
+
+.editingMessage {
+  border: 2px solid #4a90e2;
+  background: #eaf3ff;
+}
+
+.editedLabel {
+  font-size: 11px;
+  color: #777;
+  margin-top: 4px;
+}
+
+.cancelEdit {
+  background: #ff5f5f;
+  color: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  border: none;
+  cursor: pointer;
+}
+
+.msgDropdown {
+  position: absolute;
+
+  top: 0;
+  right: 100%;
+
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+
+  min-width: 140px;
+
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+
+  z-index: 1000;
+
+  white-space: nowrap;
+  animation: dropdownFade 0.15s ease-out;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.msgDropdown button {
+  width: 100%;
+  padding: 8px 12px;
+
+  border: none;
+  background: transparent;
+
+  text-align: left;
+  font-size: 13px;
+
+  cursor: pointer;
+
+  transition: background 0.15s ease;
+}
+
+.msgDropdown button:not(:last-child) {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.msgDropdown button:hover {
+  background: #f3f4f6;
+}
+
+.inputArea {
+  display: flex;
+  margin-top: 10px;
+  gap: 10px;
+  margin: 20px;
+}
+
+.inputArea input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+}
+
+.inputArea button {
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: none;
+  background: #4a90e2;
+  color: white;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .chatArea {
+    height: 60%;
+  }
+}
+
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.previewBody {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  gap: 20px;
+}
+
+.startChatButton {
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  background: #7c7ada;
+  color: white;
+  transition: background 0.2s ease;
+}
+
+.startChatButton:hover {
+  background: #6664c7;
+}
+
+.previewContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 16px;
+}
+
+.avatarPreview {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.previewInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 15px;
+}
