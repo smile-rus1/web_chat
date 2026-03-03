@@ -13,6 +13,11 @@ class CreateChatWithUserDTO(BaseDTO):
 class ChatParticipantDTO(BaseDTO):
     chat_id: int | None = None
     account_id: int | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    username: str | None = None
+    phone_number: str | None = None
+    image_url: str | None = None
     joined_at: datetime | None = None
 
 
@@ -58,3 +63,22 @@ class UpdateMessageDTO(BaseDTO):
     chat_id: int
     old_message_text: str
     new_message_text: str
+
+
+@dataclass
+class ChatListParticipantDTO(BaseDTO):
+    account_id: int
+    username: str
+    first_name: str
+    last_name: str
+    phone_number: str
+    avatar_url: str | None
+
+
+@dataclass
+class ChatListDTO(BaseDTO):
+    chat_id: int
+    created_at: datetime | None
+    participants: list[ChatListParticipantDTO]
+    last_message: str | None
+    last_message_created_at: datetime | None

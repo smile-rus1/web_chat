@@ -4,6 +4,10 @@ from loguru import logger
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import selectinload
 
+from src.dto.db.chat.chat_read import (
+    ChatPreview,
+    ChatPreviewParticipant
+)
 from src.infrastructure.exceptions.chat.chat import (
     BaseChatException,
     ChatParticipantNotFound,
@@ -14,7 +18,7 @@ from src.interfaces.infrastructure.repo.chat_repo import IChatRepo
 from src.interfaces.infrastructure.sqlalchemy_repo import SqlAlchemyDAO
 from sqlalchemy import insert, delete, select, update, asc
 
-from src.dto.db.chat.chat import Chat, Message, ChatParticipant
+from src.dto.db.chat.chat import Chat, Message
 from src.infrastructure.db.models import ChatDB, ChatParticipantDB, MessageDB, AccountDB
 
 
@@ -149,7 +153,7 @@ class ChatRepo(SqlAlchemyDAO, IChatRepo):
         )
         await self._session.execute(sql)
 
-    async def get_all_account_chats(self, account_id: int) -> list[Chat]:
+    async def get_all_chat_previews(self, account_id: int) -> list[ChatPreview]:
         sql = (
             select(ChatDB)
             .options(selectinload(ChatDB.participants))
@@ -159,22 +163,31 @@ class ChatRepo(SqlAlchemyDAO, IChatRepo):
 
         result = await self._session.execute(sql)
         chat_models = result.scalars().unique().all()
-        chats = [
-            Chat(
-                chat_id=chat.chat_id,
-                created_at=chat.created_at,
-                participants=[
-                    ChatParticipant(
-                        chat_id=chat.chat_id,
-                        account_id=p.account_id
-                    )
-                    for p in chat.participants
-                ],
-            )
-            for chat in chat_models
-        ]
+        previews = []
 
-        return chats
+        for chat in chat_models:
+            participants = [
+                ChatPreviewParticipant(
+                    account_id=acc.account_id,
+                    username=acc.username,
+                    avatar_url=acc.image_url,
+                    last_name=acc.last_name,
+                    first_name=acc.last_name,
+                    phone_number=acc.phone_number
+                )
+                for acc in chat.participants
+            ]
+
+            previews.append(
+                ChatPreview(
+                    chat_id=chat.chat_id,
+                    created_at=chat.created_at,
+                    participants=participants,
+                    last_message=None
+                )
+            )
+
+        return previews
 
     async def update_message(self, message: Message) -> Message:
         sql = (

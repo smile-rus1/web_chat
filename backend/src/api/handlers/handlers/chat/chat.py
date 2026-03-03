@@ -44,10 +44,10 @@ async def delete_chat(
     status_code=status.HTTP_200_OK
 )
 @login_required
-async def get_all_account_chats(
+async def get_all_preview_chats(
         auth: TokenAuthDep,
         chat_service: ChatService = Depends(chat_service_provider)
 ):
-    chats = await chat_service.get_all_account_chats(auth.request.state.user.account_id)
+    chats = await chat_service.get_all_preview_chats(auth.request.state.user.account_id)
 
     return chats

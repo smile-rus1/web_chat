@@ -8,7 +8,7 @@ from src.infrastructure.redis_db.config import RedisConfig
 
 
 def get_db_connection(db_config: DBConfig):
-    engine = create_async_engine(make_connection_string(db_config))
+    engine = create_async_engine(make_connection_string(db_config), echo=True)
     maker = async_sessionmaker(
         engine,
         class_=AsyncSession,

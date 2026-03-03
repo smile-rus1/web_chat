@@ -1,4 +1,5 @@
 from src.dto.db.chat.chat import Chat, Message
+from src.dto.db.chat.chat_read import ChatPreview
 
 
 class IChatRepo:
@@ -20,7 +21,7 @@ class IChatRepo:
     async def delete_message(self, account_id: int, message_id: int, chat_id: int) -> None:
         ...
 
-    async def get_all_account_chats(self, account_id: int) -> list[Chat]:
+    async def get_all_chat_previews(self, account_id: int) -> list[ChatPreview]:
         ...
 
     async def update_message(self, message: Message) -> Message:
