@@ -17,10 +17,10 @@ from src.infrastructure.exceptions.account.account import (
     AccountNotFoundByID
 )
 from src.interfaces.infrastructure.repo.account_repo import IAccountRepo
-from src.interfaces.infrastructure.sqlalchemy_repo import SqlAlchemyDAO
+from src.interfaces.infrastructure.sqlalchemy_repo import SqlAlchemyRepo
 
 
-class AccountRepo(SqlAlchemyDAO, IAccountRepo):
+class AccountRepo(SqlAlchemyRepo, IAccountRepo):
     def __init__(self, session: AsyncSession):
         super().__init__(session)
         self._query_builder = AccountQueryBuilder()

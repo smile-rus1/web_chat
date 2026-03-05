@@ -15,14 +15,14 @@ from src.infrastructure.exceptions.chat.chat import (
     ChatConstraintViolation
 )
 from src.interfaces.infrastructure.repo.chat_repo import IChatRepo
-from src.interfaces.infrastructure.sqlalchemy_repo import SqlAlchemyDAO
+from src.interfaces.infrastructure.sqlalchemy_repo import SqlAlchemyRepo
 from sqlalchemy import insert, delete, select, update, asc
 
 from src.dto.db.chat.chat import Chat, Message
 from src.infrastructure.db.models import ChatDB, ChatParticipantDB, MessageDB, AccountDB
 
 
-class ChatRepo(SqlAlchemyDAO, IChatRepo):
+class ChatRepo(SqlAlchemyRepo, IChatRepo):
     async def create_chat(self, chat: Chat) -> Chat:
         participant_ids = [p.account_id for p in chat.participants]
         participants_key = ":" + ":".join(map(str, sorted(participant_ids))) + ":"

@@ -10,9 +10,13 @@ def files_work_service_provider():
     raise NotImplementedError
 
 
-async def chat_service_provider():
+def chat_service_provider():
     raise NotImplementedError
 
 
-async def message_service_provider():
+def message_service_provider():
+    raise NotImplementedError
+
+
+def contact_service_provider():
     raise NotImplementedError

@@ -24,6 +24,7 @@ def bind_services(app: FastAPI):
     app.dependency_overrides[abstract.services.auth_service_provider] = services.auth_service_getter  # type: ignore
     app.dependency_overrides[abstract.services.chat_service_provider] = services.chat_service_getter  # type: ignore
     app.dependency_overrides[abstract.services.message_service_provider] = services.message_service_getter  # type: ignore
+    app.dependency_overrides[abstract.services.contact_service_provider] = services.contact_service_getter  # type: ignore
 
 
 def bind_middlewares(app: FastAPI, config: WebConfig):

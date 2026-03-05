@@ -15,6 +15,7 @@ def build_tm(
         session=session,
         account_repo=repo.AccountRepo,
         chat_repo=repo.ChatRepo,
+        contact_repo=repo.ContactRepo,
     )
 
 

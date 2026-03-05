@@ -8,6 +8,7 @@ from src.services.services.account.account import AccountService
 from src.services.services.account.auth import AuthService
 from src.services.services.chat.chat import ChatService
 from src.services.services.chat.message import MessageService
+from src.services.services.contact.contact import ContactService
 from src.services.services.files_work.files_work import FilesWorkService
 
 
@@ -36,6 +37,16 @@ def message_service_getter(
     )
 
 
+def contact_service_getter(
+        tm: IBaseTransactionManager = Depends(tm_provider),
+        redis_db: IRedisDB = Depends(redis_db_provider)
+):
+    return ContactService(
+        tm=tm,
+        redis_db=redis_db
+    )
+
+
 def auth_service_getter(
         tm: IBaseTransactionManager = Depends(tm_provider),
         redis_db: IRedisDB = Depends(redis_db_provider)
@@ -47,3 +58,5 @@ def files_work_service_getter(
         fm: FilesManager = Depends(fm_provider)
 ):
     return FilesWorkService(fm)
+
+

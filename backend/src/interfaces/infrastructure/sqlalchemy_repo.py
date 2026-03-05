@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-class SqlAlchemyDAO:
+class SqlAlchemyRepo:
     def __init__(self, session: AsyncSession):
         self._session = session
