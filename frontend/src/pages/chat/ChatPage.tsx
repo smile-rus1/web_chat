@@ -1,4 +1,5 @@
 import { useState, useEffect} from "react"
+import toast from "react-hot-toast"
 import { api } from "../../services/api"
 import { authService } from "../../services/auth"
 
@@ -7,6 +8,9 @@ import { ChatSidebar } from "../../components/chat/sidebar/ChatSidebar"
 import { ChatWindow } from "../../components/chat/window/ChatWindow"
 import { ConfirmChatDelete } from "../../components/chat/modals/ConfirmChatDelete"
 import { ConfirmMessageDelete } from "../../components/chat/modals/ConfirmMessageDelete"
+
+import { AddContactModal } from "../../components/chat/modals/AddContactModal"
+import { EditContactModal } from "../../components/chat/modals/EditContactmodal"
 
 import { useChatSocket } from "../../hooks/useChatSocket"
 import { useChatMessages } from "../../hooks/useChatMessages"
@@ -36,6 +40,8 @@ export const ChatPage = () => {
 
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null)
   const [confirmDeleteMsgId, setConfirmDeleteMsgId] = useState<number | null>(null)
+  const [addContactId, setAddContactId] = useState<number | null>(null)
+  const [editContactId, setEditContactId] = useState<number | null>(null)
 
 /* ================= HANDLERS ================= */
   const handleOpenMessageMenu = (id: number) => {
@@ -80,6 +86,66 @@ export const ChatPage = () => {
       console.error("Ошибка создания чата", err)  
     }
       setSelectedAccountPreview(null)
+    }
+
+    const handleAddContact = async (contactName: string) => {
+      if (!addContactId) return
+      try {
+
+        const response = await api.post("/contacts/", {
+          contact_id: addContactId,
+          contact_name: contactName
+        })
+
+        toast.success("Контакт успешно добавлен")
+
+      } catch (err: any) {
+        const message = err.response?.data
+          if (message.includes("already added")) {
+            toast.error("Этот контакт уже добавлен")
+          }
+          else if (message.includes("cannot add")) {
+            toast.error("Вы не можете добавить этот аккаунт")
+          }
+          else if (message.includes("not found")) {
+            toast.error("Пользователь не найден")
+          }
+          else {
+            toast.error("Что-то пошло не так, попробуйте позже")
+          }
+
+      }
+      setAddContactId(null)
+    }
+
+    const handleEditContact = async (contactName: string) => {
+      if (!editContactId) return
+      try {
+
+        const response = await api.patch("/contacts/update_contact_name", {
+          contact_id: editContactId,
+          contact_name: contactName
+        })
+
+        toast.success("Контакт успешно изменен")
+
+      } catch (err: any) {
+        const message = err.response?.data
+          if (message.includes("already added")) {
+            toast.error("Этот контакт уже добавлен")
+          }
+          else if (message.includes("cannot add")) {
+            toast.error("Вы не можете добавить этот аккаунт")
+          }
+          else if (message.includes("not found")) {
+            toast.error("Пользователь не найден")
+          }
+          else {
+            toast.error("Что-то пошло не так, попробуйте позже")
+          }
+
+      }
+      setEditContactId(null)
     }
 
     /* ================= SOCKET ================= */
@@ -213,6 +279,10 @@ export const ChatPage = () => {
 
         accountPreview={selectedAccountPreview}
         onChatCreated={handleStartChatFromPreview}
+
+        onAddContact={(id) => setAddContactId(id)}
+        onEditContact={(id) => setEditContactId(id)}
+        onDeleteChat={(chatId) => setConfirmDeleteId(chatId)}
       />
 
       {/* ================= MODALS ================= */}
@@ -230,6 +300,21 @@ export const ChatPage = () => {
           messageId={confirmDeleteMsgId}
           onConfirm={() => deleteMessage(confirmDeleteMsgId)}
           onCancel={() => setConfirmDeleteMsgId(null)}
+        />
+      )}
+
+      {addContactId && (
+        <AddContactModal
+          contactId={addContactId}
+          onConfirm={handleAddContact}
+          onCancel={() => setAddContactId(null)}
+        />
+      )}
+      {editContactId && (
+        <EditContactModal
+          contactId={editContactId}
+          onConfirm={handleEditContact}
+          onCancel={() => setEditContactId(null)}
         />
       )}
 

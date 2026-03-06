@@ -3,9 +3,10 @@ import type { ChatListDTO } from "../../../types/chat.types"
 
 interface Props {
   chat: ChatListDTO
+  onMenuClick: () => void
 }
 
-export const ChatHeader = ({ chat }: Props) => {
+export const ChatHeader = ({ chat, onMenuClick  }: Props) => {
 
   const participant = chat.participants[0]
 
@@ -38,8 +39,10 @@ export const ChatHeader = ({ chat }: Props) => {
 
       </div>
 
-      {/* Three dots menu */}
-      <div className={styles.menu}>
+      <div 
+      className={styles.menu}
+      onClick={onMenuClick}
+      >
         ⋮
       </div>
     </div>

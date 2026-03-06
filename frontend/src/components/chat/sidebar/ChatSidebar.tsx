@@ -4,6 +4,7 @@ import { api } from "../../../services/api"
 import styles from "./ChatSidebar.module.css"
 import type { ChatListDTO } from "../../../types/chat.types"
 import type { Account } from "../../../types/account.types"
+import type { AccountContact } from "../../../types/contact.type"
 import { authService } from "../../../services/auth"
 
 interface Props {
@@ -38,6 +39,10 @@ export const ChatSidebar = ({
   const [menuPosition, setMenuPosition] =
     useState<{ top: number; left: number }>({ top: 0, left: 0 })
 
+  const [showContacts, setShowContacts] = useState(false)
+  const [contacts, setContacts] = useState<AccountContact[]>([])
+  const [contactsLoading, setContactsLoading] = useState(false)
+
   const [isSearchingAccounts, setIsSearchingAccounts] = useState(false)
   const [accounts, setAccounts] = useState<Account[]>([])
   const [accountsLoading, setAccountsLoading] = useState(false)
@@ -45,12 +50,13 @@ export const ChatSidebar = ({
   const menuRef = useRef<HTMLDivElement | null>(null)
 
   const handleBackToChats = () => {
-      setIsSearchingAccounts(false)
-      setAccounts([])
-      setSearch("")
-      setOffset(0)
-      setHasMore(true)
-    }
+    setIsSearchingAccounts(false)
+    setShowContacts(false)
+    setAccounts([])
+    setSearch("")
+    setOffset(0)
+    setHasMore(true)
+}
   
 const currentAccountId = authService.getAccountId()
 
@@ -116,6 +122,23 @@ const getChatUsername = (chat: ChatListDTO) => {
   }
 }
 
+const loadContacts = async () => {
+  try {
+    setContactsLoading(true)
+
+    const response = await api.get<AccountContact[]>("/contacts/")
+
+    setContacts(response.data)
+    setShowContacts(true)
+
+  } catch (err) {
+    console.error(err)
+  } finally {
+    setContactsLoading(false)
+  }
+}
+
+
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
   if (e.key === "Enter") {
     setOffset(0)
@@ -162,29 +185,38 @@ const getChatUsername = (chat: ChatListDTO) => {
       {/* ================= TOP BAR ================= */}
 
       <div className={styles.topBar}>
-        {isSearchingAccounts ? (
-          <button
-            className={styles.backButton}
-            onClick={handleBackToChats}
-          >
-            ←
-          </button>
-        ) : (
-          <button
-            className={styles.menuButton}
-            onClick={() => setDropdownOpen(prev => !prev)}
-          >
-            ☰
-          </button>
-        )}
+        {(isSearchingAccounts || showContacts) && (
+            <button
+              className={styles.backButton}
+              onClick={handleBackToChats}
+            >
+              ←
+            </button>
+          )}
+
+          {/* КНОПКА МЕНЮ */}
+          {!isSearchingAccounts && !showContacts && (
+            <button
+              className={styles.menuButton}
+              onClick={() => setDropdownOpen(prev => !prev)}
+            >
+              ☰
+            </button>
+          )}
 
         {!isSearchingAccounts && dropdownOpen && (
           <div className={styles.dropdown}>
             <div className={styles.dropdownItem}>
               <a href="/profile">Мой профиль</a>
             </div>
-            <div className={styles.dropdownItem}>
-              <a href="#">Мои контакты</a>
+            <div
+              className={styles.dropdownItem}
+              onClick={() => {
+                loadContacts()
+                setDropdownOpen(false)
+              }}
+            >
+              Мои контакты
             </div>
           </div>
         )}
@@ -218,7 +250,6 @@ const getChatUsername = (chat: ChatListDTO) => {
         className={styles.chatList}
         ref={listRef}
         >
-
         {isSearchingAccounts ? (
           accountsLoading ? (
             <div className={styles.loading}>Поиск...</div>
@@ -248,7 +279,44 @@ const getChatUsername = (chat: ChatListDTO) => {
               </div>
             ))
           )
-        ) : (
+        ): showContacts ? (
+          
+
+  /* ================= CONTACTS ================= */
+
+  contactsLoading ? (
+    
+    <div className={styles.loading}>Загрузка контактов...</div>
+  ) : contacts.length === 0 ? (
+    <div className={styles.emptyResult}>
+      У вас пока нет контактов
+    </div>
+  ) : (
+    
+    contacts.map(contact => (
+      <div
+        key={contact.contact_id}
+        className={styles.chatItem}
+      >
+        <img
+          src={contact.image_url || "/default-avatar.png"}
+          className={styles.chatAvatar}
+        />
+
+        <div className={styles.chatInfo}>
+          <div className={styles.chatName}>
+            {contact.contact_name}
+          </div>
+
+          <div className={styles.chatUsername}>
+            @{contact.username}
+          </div>
+        </div>
+      </div>
+    ))
+  )
+) 
+        : (
           filteredChats.map(chat => (
             <div
               key={chat.chat_id}

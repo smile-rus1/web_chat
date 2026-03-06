@@ -1,4 +1,4 @@
-import  { useRef, useEffect } from "react"
+import  { useRef, useEffect, useState } from "react"
 import type { MouseEvent } from "react"
 import styles from "./ChatWindow.module.css"
 import type { ChatListDTO, ChatMessagesDTO } from "../../../types/chat.types"
@@ -23,6 +23,9 @@ interface Props {
   setConfirmDeleteMsgId: (id: number | null) => void
   accountPreview: Account | null
   onChatCreated: (account: Account) => void
+  onAddContact: (contactId: number) => void
+  onEditContact: (contactId: number) => void
+  onDeleteChat: (chatId: number) => void
 }
 
 
@@ -41,7 +44,10 @@ export const ChatWindow = ({
   setMsgMenuId,
   setConfirmDeleteMsgId,
   accountPreview,
-  onChatCreated
+  onChatCreated,
+  onAddContact,
+  onEditContact,
+  onDeleteChat
 }: Props) => {
 
   if (accountPreview) {
@@ -80,6 +86,8 @@ export const ChatWindow = ({
 
   
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
+  const headerMenuRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
   if (!dropdownRef.current) return
 
@@ -109,6 +117,25 @@ useEffect(() => {
   }
 }, [])
 
+useEffect(() => {
+
+  function handleClickOutside(event: globalThis.MouseEvent) {
+    if (!headerMenuRef.current) return
+
+    if (!headerMenuRef.current.contains(event.target as Node)) {
+      setHeaderMenuOpen(false)
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside)
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside)
+  }
+
+}, [])
+
+
   if (!chat) {
     return <div className={styles.noChat}>Выберите чат</div>
   }
@@ -119,7 +146,63 @@ useEffect(() => {
       <div className={styles.chatContent}>
 
         {/* HEADER */}
-        <ChatHeader chat={chat} />
+        <ChatHeader 
+          chat={chat} 
+          onMenuClick={() => setHeaderMenuOpen(prev => !prev)}
+        />
+        {headerMenuOpen && (
+        <div
+          ref={headerMenuRef}
+          className={styles.chatHeaderDropdown}
+        >
+
+    <button
+      className={styles.dropdownItem}
+      onClick={() => {
+        const participant = chat.participants.find(
+          p => p.account_id !== currentUserId
+        )
+
+        if (participant) {
+          onAddContact(participant.account_id)
+        }
+
+        setHeaderMenuOpen(false)
+      }}
+    >
+      Добавить контакт
+    </button>
+
+      <button
+        className={styles.dropdownItem}
+        onClick={() => {
+          const participant = chat.participants.find(
+            p => p.account_id !== currentUserId
+          )
+
+          if (participant) {
+            onEditContact(participant.account_id)
+          }
+
+          setHeaderMenuOpen(false)
+        }}
+      >
+        Изменить контакт
+      </button>
+
+      <button
+        className={styles.dropdownItemDelete}
+        onClick={() => {
+          if (chat) {
+            onDeleteChat(chat.chat_id)
+          }
+        }}
+      >
+        Удалить чат
+      </button>
+
+        </div>
+      )}
 
         {/* MESSAGES */}
         <div className={styles.messages}>
