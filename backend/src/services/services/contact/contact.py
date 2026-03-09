@@ -20,7 +20,7 @@ class ContactUseCase(ABC):
 
 
 class CreateNewContact(ContactUseCase):
-    async def __call__(self, contact_dto: CreateNewContactDTO) -> ContactDTO:
+    async def __call__(self, contact_dto: CreateNewContactDTO, redis_db: IRedisDB) -> ContactDTO:
         if contact_dto.contact_id == contact_dto.account_id:
             raise AccessDeniedToAddedContact(contact_dto.contact_id)
 
@@ -49,6 +49,9 @@ class CreateNewContact(ContactUseCase):
                 case _:
                     raise BaseServiceContactException()
 
+        key = f"contacts_account_{contact_dto.account_id}"
+        await redis_db.delete(key)
+
         return ContactDTO(
             account_id=contact_dto.account_id,
             contact_id=contact_dto.contact_id,
@@ -58,7 +61,7 @@ class CreateNewContact(ContactUseCase):
 
 
 class UpdateContactName(ContactUseCase):
-    async def __call__(self, contact_dto: UpdateContactDTO) -> None:
+    async def __call__(self, contact_dto: UpdateContactDTO, redis_db: IRedisDB) -> None:
         contact = Contact(
             contact_id=contact_dto.contact_id,
             account_id=contact_dto.account_id,
@@ -74,15 +77,20 @@ class UpdateContactName(ContactUseCase):
             ).error(f"WITH DATA {contact}\nMESSAGE: {exc}")
             await self._tm.rollback()
 
+        key = f"contacts_account_{contact_dto.account_id}"
+        await redis_db.delete(key)
+
 
 class DeleteContact(ContactUseCase):
-    async def __call__(self, contact_id: int, account_id: int) -> None:
+    async def __call__(self, contact_id: int, account_id: int, redis_db: IRedisDB) -> None:
         contact = Contact(
             contact_id=contact_id,
             account_id=account_id
         )
         await self._tm.contact_repo.delete_contact(contact)
         await self._tm.commit()
+        key = f"contacts_account_{account_id}"
+        await redis_db.delete(key)
 
 
 class GetAllContactsAccount(ContactUseCase):
@@ -122,13 +130,13 @@ class ContactService:
         self._redis_db = redis_db
 
     async def create_new_contact(self, contact_dto: CreateNewContactDTO) -> ContactDTO:
-        return await CreateNewContact(self._tm)(contact_dto)
+        return await CreateNewContact(self._tm)(contact_dto, self._redis_db)
 
     async def change_contact_name(self, contact_dto: UpdateContactDTO) -> None:
-        return await UpdateContactName(self._tm)(contact_dto)
+        return await UpdateContactName(self._tm)(contact_dto, self._redis_db)
 
     async def delete_contact(self, contact_id: int, account_id: int) -> None:
-        return await DeleteContact(self._tm)(contact_id, account_id)
+        return await DeleteContact(self._tm)(contact_id, account_id, self._redis_db)
 
     async def get_all_contacts(self, account_id: int) -> list[AccountContactDTO]:
         return await GetAllContactsAccount(self._tm)(account_id, self._redis_db)
