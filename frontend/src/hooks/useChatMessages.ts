@@ -45,6 +45,7 @@ export const useChatMessages = ({ socketRef, chatId }: Params) => {
             : m
         )
       )
+      console.log(messages)
       return
     }
 

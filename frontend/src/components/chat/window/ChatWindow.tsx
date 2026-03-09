@@ -4,6 +4,7 @@ import styles from "./ChatWindow.module.css"
 import type { ChatListDTO, ChatMessagesDTO } from "../../../types/chat.types"
 import { ChatHeader } from "./ChatHeader"
 import type { Account } from "../../../types/account.types"
+import type { AccountContact } from "../../../types/contact.type"
 
 interface Props {
   chat: ChatListDTO | null
@@ -15,7 +16,6 @@ interface Props {
   onSendMessage: () => void
   onCancelEdit: () => void
   onStartEdit: (msg: ChatMessagesDTO) => void
-  onDeleteMessage: () => void
   onOpenMessageMenu: (id: number) => void
   msgMenuId: number | null
   setMsgMenuId: (id: number | null) => void
@@ -25,12 +25,15 @@ interface Props {
   onChatCreated: (account: Account) => void
   onAddContact: (contactId: number) => void
   onEditContact: (contactId: number) => void
+  onDeleteContact:  (contactId: number) => void
   onDeleteChat: (chatId: number) => void
+  contacts: AccountContact[]
 }
 
 
 export const ChatWindow = ({
   chat,
+  contacts,
   messages,
   currentUserId,
   messageInput,
@@ -47,7 +50,8 @@ export const ChatWindow = ({
   onChatCreated,
   onAddContact,
   onEditContact,
-  onDeleteChat
+  onDeleteContact,
+  onDeleteChat,
 }: Props) => {
 
   if (accountPreview) {
@@ -140,6 +144,16 @@ useEffect(() => {
     return <div className={styles.noChat}>Выберите чат</div>
   }
 
+  const participant = chat.participants.find(
+      p => p.account_id !== currentUserId
+    )
+
+  const contact = contacts.find(
+      c => c.contact_id === participant?.account_id
+    )
+
+  const isContact = Boolean(contact)
+
   return (
     <main className={styles.chatArea}>
 
@@ -155,51 +169,56 @@ useEffect(() => {
           ref={headerMenuRef}
           className={styles.chatHeaderDropdown}
         >
+          {!isContact ? (
+            <button
+              className={styles.dropdownItem}
+              onClick={() => {
+                if (participant) {
+                  onAddContact(participant.account_id)
+                }
+                setHeaderMenuOpen(false)
+              }}
+            >
+              Добавить контакт
+            </button>
+          ) : (
+            <>
+              <button
+                className={styles.dropdownItem}
+                onClick={() => {
+                  if (participant) {
+                    onEditContact(participant.account_id)
+                  }
+                  setHeaderMenuOpen(false)
+                }}
+              >
+                Изменить контакт
+              </button>
 
-    <button
-      className={styles.dropdownItem}
-      onClick={() => {
-        const participant = chat.participants.find(
-          p => p.account_id !== currentUserId
-        )
+              <button
+                className={styles.dropdownItem}
+                onClick={() => {
+                  if (participant) {
+                    onDeleteContact(participant.account_id)
+                  }
+                  setHeaderMenuOpen(false)
+                }}
+              >
+                Удалить контакт
+              </button>
+            </>
+          )}
 
-        if (participant) {
-          onAddContact(participant.account_id)
-        }
-
-        setHeaderMenuOpen(false)
-      }}
-    >
-      Добавить контакт
-    </button>
-
-      <button
-        className={styles.dropdownItem}
-        onClick={() => {
-          const participant = chat.participants.find(
-            p => p.account_id !== currentUserId
-          )
-
-          if (participant) {
-            onEditContact(participant.account_id)
-          }
-
-          setHeaderMenuOpen(false)
-        }}
-      >
-        Изменить контакт
-      </button>
-
-      <button
-        className={styles.dropdownItemDelete}
-        onClick={() => {
-          if (chat) {
-            onDeleteChat(chat.chat_id)
-          }
-        }}
-      >
-        Удалить чат
-      </button>
+          <button
+            className={styles.dropdownItemDelete}
+            onClick={() => {
+              if (chat) {
+                onDeleteChat(chat.chat_id)
+              }
+            }}
+          >
+            Удалить чат
+          </button>
 
         </div>
       )}
@@ -220,8 +239,8 @@ useEffect(() => {
                 `}
                 onContextMenu={(e: MouseEvent) => {
                   if (!isOwner) return
-                  e.preventDefault()
-                  onOpenMessageMenu(msg.message_id)
+                    e.preventDefault()
+                    onOpenMessageMenu(msg.message_id)
                 }}
               >
 

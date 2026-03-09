@@ -11,14 +11,17 @@ import { ConfirmMessageDelete } from "../../components/chat/modals/ConfirmMessag
 
 import { AddContactModal } from "../../components/chat/modals/AddContactModal"
 import { EditContactModal } from "../../components/chat/modals/EditContactmodal"
+import { DeleteContactModal } from "../../components/chat/modals/DeleteContactMidal"
 
 import { useChatSocket } from "../../hooks/useChatSocket"
 import { useChatMessages } from "../../hooks/useChatMessages"
 
 import type { ChatListDTO, ChatMessagesDTO } from "../../types/chat.types"
 import type { Account } from "../../types/account.types"
+import type { AccountContact } from "../../types/contact.type"
 
 export const ChatPage = () => {
+  
 
   /* ================= AUTH ================= */
 
@@ -36,12 +39,17 @@ export const ChatPage = () => {
   const [oldMessageText, setOldMessageText] = useState("")
   const [msgMenuId, setMsgMenuId] = useState<number | null>(null)
 
+  const [contacts, setContacts] = useState<AccountContact[]>([])
+
+  const [contactsLoading, setContactsLoading] = useState(false)
+
   /* ================= MODALS ================= */
 
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null)
   const [confirmDeleteMsgId, setConfirmDeleteMsgId] = useState<number | null>(null)
   const [addContactId, setAddContactId] = useState<number | null>(null)
   const [editContactId, setEditContactId] = useState<number | null>(null)
+  const [deleteContactId, setDeleteContactId] = useState<number | null>(null)
 
 /* ================= HANDLERS ================= */
   const handleOpenMessageMenu = (id: number) => {
@@ -88,16 +96,18 @@ export const ChatPage = () => {
       setSelectedAccountPreview(null)
     }
 
+    /* ================= CONTACTS ================= */
     const handleAddContact = async (contactName: string) => {
       if (!addContactId) return
       try {
 
-        const response = await api.post("/contacts/", {
+        await api.post("/contacts/", {
           contact_id: addContactId,
           contact_name: contactName
         })
 
         toast.success("Контакт успешно добавлен")
+        await loadContacts()
 
       } catch (err: any) {
         const message = err.response?.data
@@ -122,10 +132,11 @@ export const ChatPage = () => {
       if (!editContactId) return
       try {
 
-        const response = await api.patch("/contacts/update_contact_name", {
+        await api.patch("/contacts/update_contact_name", {
           contact_id: editContactId,
           contact_name: contactName
         })
+        await loadContacts()
 
         toast.success("Контакт успешно изменен")
 
@@ -146,6 +157,12 @@ export const ChatPage = () => {
 
       }
       setEditContactId(null)
+    }
+
+      
+    const handleDeleteContact = async (contactId: number) => {
+      await api.delete(`/contacts/${contactId}`)
+      await loadContacts()
     }
 
     /* ================= SOCKET ================= */
@@ -188,8 +205,24 @@ export const ChatPage = () => {
     }
   }
 
+  const loadContacts = async () => {
+    try {
+      setContactsLoading(true)
+
+      const response = await api.get<AccountContact[]>("/contacts/")
+
+      setContacts(response.data)
+
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setContactsLoading(false)
+    }
+  }
+
   useEffect(() => {
     loadChats()
+    loadContacts()
   }, [])
 
   /* ================= CHAT DELETE ================= */
@@ -222,7 +255,6 @@ export const ChatPage = () => {
 
             setEditingMessageId(null)
         } else {
-          console.log(messageInput)
           sendMessage({
             message_text: messageInput
           })
@@ -240,6 +272,8 @@ export const ChatPage = () => {
 
       <ChatSidebar
         chats={chatList}
+        contacts={contacts}
+        contactsLoading={contactsLoading}
         selectedChatId={selectedChat?.chat_id ?? null}
         loading={loading}
         search={search}
@@ -259,6 +293,7 @@ export const ChatPage = () => {
 
       <ChatWindow
         chat={selectedChat}
+        contacts={contacts}
         messages={messages}
         currentUserId={currentUserId}
 
@@ -269,7 +304,6 @@ export const ChatPage = () => {
         onSendMessage={handleSendMessage}
         onCancelEdit={handleCancelEdit}
         onStartEdit={handleStartEdit}
-        onDeleteMessage={() => {}}
 
         onOpenMessageMenu={handleOpenMessageMenu}
         msgMenuId={msgMenuId}
@@ -282,6 +316,7 @@ export const ChatPage = () => {
 
         onAddContact={(id) => setAddContactId(id)}
         onEditContact={(id) => setEditContactId(id)}
+        onDeleteContact={(id) => setDeleteContactId(id)}
         onDeleteChat={(chatId) => setConfirmDeleteId(chatId)}
       />
 
@@ -315,6 +350,13 @@ export const ChatPage = () => {
           contactId={editContactId}
           onConfirm={handleEditContact}
           onCancel={() => setEditContactId(null)}
+        />
+      )}
+      {deleteContactId && (
+        <DeleteContactModal
+          contactId={deleteContactId}
+          onConfirm={handleDeleteContact}
+          onCancel={() => setDeleteContactId(null)}
         />
       )}
 

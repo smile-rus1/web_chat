@@ -16,6 +16,8 @@ interface Props {
   onSelectChat: (chat: ChatListDTO) => void
   onDeleteChat: (chatId: number) => void
   onSelectAccount: (account: Account) => void
+  contacts: AccountContact[]
+  contactsLoading: boolean
 }
 
 export const ChatSidebar = ({
@@ -26,7 +28,9 @@ export const ChatSidebar = ({
   loading,
   onSelectChat,
   onDeleteChat,
-  onSelectAccount
+  onSelectAccount,
+  contacts,
+  contactsLoading,
 }: Props) => {
   const LIMIT = 20
 
@@ -40,8 +44,6 @@ export const ChatSidebar = ({
     useState<{ top: number; left: number }>({ top: 0, left: 0 })
 
   const [showContacts, setShowContacts] = useState(false)
-  const [contacts, setContacts] = useState<AccountContact[]>([])
-  const [contactsLoading, setContactsLoading] = useState(false)
 
   const [isSearchingAccounts, setIsSearchingAccounts] = useState(false)
   const [accounts, setAccounts] = useState<Account[]>([])
@@ -65,7 +67,17 @@ const getChatUsername = (chat: ChatListDTO) => {
     p => p.account_id !== currentAccountId
   )
 
-  return participant?.username ?? "Unknown"
+  if (!participant) return "Unknown"
+
+  const contact = contacts.find(
+    c => c.contact_id === participant.account_id
+  )
+
+  if (contact) {
+    return contact.contact_name
+  }
+
+  return participant.username
 }
 
   /* ================= CLOSE CONTEXT MENU ================= */
@@ -122,22 +134,6 @@ const getChatUsername = (chat: ChatListDTO) => {
   }
 }
 
-const loadContacts = async () => {
-  try {
-    setContactsLoading(true)
-
-    const response = await api.get<AccountContact[]>("/contacts/")
-
-    setContacts(response.data)
-    setShowContacts(true)
-
-  } catch (err) {
-    console.error(err)
-  } finally {
-    setContactsLoading(false)
-  }
-}
-
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
   if (e.key === "Enter") {
@@ -173,11 +169,11 @@ const loadContacts = async () => {
     return <div className={styles.loading}>Загрузка...</div>
   }
 
-  const filteredChats = chats.filter(chat =>
-    chat.participants.some(p =>
-      p.username.toLowerCase().includes(search.toLowerCase())
-    )
-  )
+  const filteredChats = chats.filter(chat => {
+    const name = getChatUsername(chat)
+
+    return name.toLowerCase().includes(search.toLowerCase())
+  })
 
   return (
     <aside className={styles.sidebar}>
@@ -212,7 +208,7 @@ const loadContacts = async () => {
             <div
               className={styles.dropdownItem}
               onClick={() => {
-                loadContacts()
+                setShowContacts(true)
                 setDropdownOpen(false)
               }}
             >
