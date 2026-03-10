@@ -9,6 +9,22 @@ interface Params {
 }
 
 export const useChatMessages = ({ socketRef, chatId }: Params) => {
+    const mergeMessages = (prev: ChatMessagesDTO[], incoming: ChatMessagesDTO[]) => {
+    const map = new Map<number, ChatMessagesDTO>()
+
+    for (const msg of prev) {
+      map.set(msg.message_id, msg)
+    }
+
+    for (const msg of incoming) {
+      map.set(msg.message_id, {
+        ...map.get(msg.message_id),
+        ...msg
+      })
+    }
+
+    return Array.from(map.values()).sort((a, b) => a.message_id - b.message_id)
+  }
   
 
   const [messages, setMessages] = useState<ChatMessagesDTO[]>([])
@@ -23,40 +39,26 @@ export const useChatMessages = ({ socketRef, chatId }: Params) => {
     if (!data?.event) return
 
     if (data.event === "messages") {
-      setMessages(data.messages ?? [])
+      setMessages(prev => mergeMessages(prev, data.messages ?? []))
       return
     }
 
     if (data.event === "new_message") {
-      setMessages(prev => {
-        if (prev.some(m => m.message_id === data.message.message_id)) {
-          return prev
-        }
-        return [...prev, data.message]
-      })
+      setMessages(prev => mergeMessages(prev, [data.message]))
       return
     }
 
     if (data.event === "message_updated") {
-      setMessages(prev =>
-        prev.map(m =>
-          m.message_id === data.message.message_id
-            ? data.message
-            : m
-        )
-      )
-      console.log(messages)
+      setMessages(prev => mergeMessages(prev, [data.message]))
       return
     }
 
     if (data.event === "message_deleted") {
-      setMessages(prev =>
-        prev.filter(m => m.message_id !== data.message_id)
-      )
+      setMessages(prev => prev.filter(m => m.message_id !== data.message_id))
       return
     }
 
-  }, [])
+  }, [chatId])
 
   /* ================= SEND MESSAGE ================= */
 

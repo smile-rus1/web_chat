@@ -85,12 +85,12 @@ export const ChatPage = () => {
       )
 
       const newChat = response.data
-      console.log(newChat)
 
       setChatList(prev => [...prev, newChat])
       setSelectedChat(newChat)
 
     } catch (err) {
+      toast.error("Что-то пошло не так, попробуйте чуть позже")
       console.error("Ошибка создания чата", err)  
     }
       setSelectedAccountPreview(null)
@@ -199,6 +199,7 @@ export const ChatPage = () => {
       const response = await api.get<ChatListDTO[]>("/chat/")
       setChatList(response.data)
     } catch (err) {
+      toast.error("Что-то пошло не так, попробуйте чуть позже")
       console.error(err)
     } finally {
       setLoading(false)
@@ -214,6 +215,7 @@ export const ChatPage = () => {
       setContacts(response.data)
 
     } catch (err) {
+      toast.error("Что-то пошло не так, попробуйте чуть позже")
       console.error(err)
     } finally {
       setContactsLoading(false)
@@ -251,9 +253,9 @@ export const ChatPage = () => {
               message_id: editingMessageId,
               old_message_text: oldMessageText,
               new_message_text: messageInput
-            })
+          })
 
-            setEditingMessageId(null)
+          setEditingMessageId(null)
         } else {
           sendMessage({
             message_text: messageInput
