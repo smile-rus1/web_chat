@@ -52,6 +52,8 @@ class SendMessage(MessageUseCase):
                 app_name=f"{SendMessage.__name__}"
             ).error(f"WITH DATA {message}\nMESSAGE: {exc}")
 
+            raise BaseChatException()
+
         return MessageDTO(
             chat_id=res.chat_id,
             sender_id=res.sender_id,
@@ -76,14 +78,14 @@ class UpdateMessage(MessageUseCase):
             return MessageDTO(
                 chat_id=message_dto.chat_id,
                 sender_id=message_dto.sender_id,
-                message_id=message_dto.chat_id,
+                message_id=message_dto.message_id,
                 message_text=message_dto.new_message_text
             )
 
         message = Message(
             message_id=message_dto.message_id,
             sender_id=message_dto.sender_id,
-            chat_id=message_dto.chat_id,
+            chat_id=message_dto.message_id,
             message_text=message_dto.new_message_text
         )
         try:
@@ -95,6 +97,8 @@ class UpdateMessage(MessageUseCase):
             logger.bind(
                 app_name=f"{SendMessage.__name__}"
             ).error(f"WITH DATA {message}\nMESSAGE: {exc}")
+
+            raise BaseChatException()
 
         return MessageDTO(
             chat_id=message_dto.chat_id,
