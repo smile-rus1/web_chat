@@ -161,7 +161,8 @@ useEffect(() => {
 
         {/* HEADER */}
         <ChatHeader 
-          chat={chat} 
+          chat={chat}
+          participant={participant}
           onMenuClick={() => setHeaderMenuOpen(prev => !prev)}
         />
         {headerMenuOpen && (

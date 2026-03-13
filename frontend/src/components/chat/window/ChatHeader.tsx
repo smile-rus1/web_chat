@@ -1,24 +1,22 @@
 import styles from "./ChatHeader.module.css"
-import type { ChatListDTO } from "../../../types/chat.types"
+import type { ChatListDTO, ChatListParticipantDTO } from "../../../types/chat.types"
 
 interface Props {
   chat: ChatListDTO
+  participant?: ChatListParticipantDTO
   onMenuClick: () => void
 }
 
-export const ChatHeader = ({ chat, onMenuClick  }: Props) => {
-
-  const participant = chat.participants[0]
+export const ChatHeader = ({ chat, participant, onMenuClick  }: Props) => {
 
   return (
     <div className={styles.chatHeader}>
-
       {/* Avatar */}
       {participant?.avatar_url && (
         <img
           src={participant.avatar_url}
           alt="avatar"
-          className={styles.avatar}
+          className={styles.chatHeaderAvatar}
         />
       )}
 

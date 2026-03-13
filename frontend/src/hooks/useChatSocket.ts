@@ -16,7 +16,7 @@ export const useChatSocket = ({ chatId }: Params) => {
     const socket = new ChatSocket()
     socket.connect(chatId)
 
-    socket.onOpen(() => {
+    socket.onOpen(() => {  // вот тут просто что-то сделать с этим чтобы допустим у меня шел запрос именно при нажатии на чат, а тут при открытии не делался
       socket.send({
         event: "get_messages",
         offset: 0,
