@@ -153,15 +153,17 @@ async def get_account_by_id(
         account_id: int,
         auth: TokenAuthDep,
         account_service: AccountService = Depends(account_service_provider),
+        files_work: FilesWorkService = Depends(files_work_service_provider)
 ):
     account = await account_service.get_account_by_id(account_id=account_id)
+
     return ResponseAccountVM(
         account_id=account_id,
         username=account.username,
         first_name=account.first_name,
         last_name=account.last_name,
         phone_number=account.phone_number,
-        image_url=account.image_url,
+        image_url=files_work.get_image(account.image_url),
         country=account.country,
         email=account.email
     )

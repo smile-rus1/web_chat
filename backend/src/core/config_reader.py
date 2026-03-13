@@ -40,7 +40,8 @@ def config_loader() -> Config:
         ),
         files_work=FilesWorkConfig(
             url_save_file=os.getenv("URL_SAVE_FILE"),
-            chunk_size=int(os.getenv("CHUNK_SIZE"))
+            chunk_size=int(os.getenv("CHUNK_SIZE")),
+            url_storage_location=os.getenv("URL_STORAGE_LOCATION")
         )
     )
 
