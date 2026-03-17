@@ -32,7 +32,6 @@ backend/.idea
 backend/alembic.ini
 backend/**/__pycache__/
 backend/**/.pytest_cache
-backend/src/infrastructure/db/migrations/versions
-backend/src/core/logs/
-backend/src/infrastructure/files_work/files/
+backend/src/core/logs/*
+backend/src/infrastructure/files_work/files/*
 backend/qodana.yaml

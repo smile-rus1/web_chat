@@ -12,6 +12,9 @@ def init_app(app: FastAPI, config: Config) -> FastAPI:
     bind_routes(app, config.web)
 
     if config.web.debug:
-        app.mount("/files", StaticFiles(directory="infrastructure/files_work/files"))
+        from pathlib import Path
+        BASE_DIR = Path(__file__).resolve().parent.parent
+        files_path = BASE_DIR / "infrastructure" / "files_work" / "files"
+        app.mount("/files", StaticFiles(directory=files_path))
 
     return app
