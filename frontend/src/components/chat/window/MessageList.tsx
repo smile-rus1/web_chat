@@ -11,7 +11,6 @@ interface Props {
   setMsgMenuId: (id: number | null) => void
 
   onStartEdit: (msg: ChatMessagesDTO) => void
-  onDeleteRequest: (messageId: number) => void
   setConfirmDeleteMsgId: (id: number | null) => void
 }
 
@@ -21,7 +20,6 @@ export const MessageList = ({
   msgMenuId,
   setMsgMenuId,
   onStartEdit,
-  onDeleteRequest,
   setConfirmDeleteMsgId
 }: Props) => {
 

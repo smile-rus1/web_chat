@@ -10,8 +10,8 @@ import { ConfirmChatDelete } from "../../components/chat/modals/ConfirmChatDelet
 import { ConfirmMessageDelete } from "../../components/chat/modals/ConfirmMessageDelete"
 
 import { AddContactModal } from "../../components/chat/modals/AddContactModal"
-import { EditContactModal } from "../../components/chat/modals/EditContactmodal"
-import { DeleteContactModal } from "../../components/chat/modals/DeleteContactMidal"
+import { EditContactModal } from "../../components/chat/modals/EditContactModal"
+import { DeleteContactModal } from "../../components/chat/modals/DeleteContactModal"
 
 import { useChatSocket } from "../../hooks/useChatSocket"
 import { useChatMessages } from "../../hooks/useChatMessages"
