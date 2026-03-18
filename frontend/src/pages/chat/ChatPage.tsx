@@ -326,7 +326,6 @@ export const ChatPage = () => {
 
       {confirmDeleteId && (
         <ConfirmChatDelete
-          chatId={confirmDeleteId}
           onConfirm={() => handleDeleteChat(confirmDeleteId)}
           onCancel={() => setConfirmDeleteId(null)}
         />
@@ -334,7 +333,6 @@ export const ChatPage = () => {
 
       {confirmDeleteMsgId && (
         <ConfirmMessageDelete
-          messageId={confirmDeleteMsgId}
           onConfirm={() => deleteMessage(confirmDeleteMsgId)}
           onCancel={() => setConfirmDeleteMsgId(null)}
         />
@@ -342,14 +340,12 @@ export const ChatPage = () => {
 
       {addContactId && (
         <AddContactModal
-          contactId={addContactId}
           onConfirm={handleAddContact}
           onCancel={() => setAddContactId(null)}
         />
       )}
       {editContactId && (
         <EditContactModal
-          contactId={editContactId}
           onConfirm={handleEditContact}
           onCancel={() => setEditContactId(null)}
         />

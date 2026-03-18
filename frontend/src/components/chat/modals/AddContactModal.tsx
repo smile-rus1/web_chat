@@ -2,13 +2,11 @@ import { useState } from "react"
 import styles from "./AddContactModal.module.css"
 
 interface Props {
-  contactId: number
   onConfirm: (contactName: string) => void
   onCancel: () => void
 }
 
 export const AddContactModal = ({
-  contactId,
   onConfirm,
   onCancel
 }: Props) => {

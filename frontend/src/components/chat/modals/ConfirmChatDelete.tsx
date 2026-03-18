@@ -1,13 +1,11 @@
 import styles from "./ChatModals.module.css"
 
 interface Props {
-  chatId: number
   onConfirm: () => void
   onCancel: () => void
 }
 
 export const ConfirmChatDelete = ({
-  chatId,
   onConfirm,
   onCancel
 }: Props) => {
