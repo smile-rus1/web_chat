@@ -323,33 +323,39 @@ export const ChatPage = () => {
       />
 
       {/* ================= MODALS ================= */}
-
+	// @ts-ignore
       {confirmDeleteId && (
         <ConfirmChatDelete
+          chatId={confirmDeleteId}
           onConfirm={() => handleDeleteChat(confirmDeleteId)}
           onCancel={() => setConfirmDeleteId(null)}
         />
       )}
-
+	// @ts-ignore
       {confirmDeleteMsgId && (
         <ConfirmMessageDelete
+          messageId={confirmDeleteMsgId}
           onConfirm={() => deleteMessage(confirmDeleteMsgId)}
           onCancel={() => setConfirmDeleteMsgId(null)}
         />
       )}
-
+	// @ts-ignore
       {addContactId && (
         <AddContactModal
+          contactId={addContactId}
           onConfirm={handleAddContact}
           onCancel={() => setAddContactId(null)}
         />
       )}
+      // @ts-ignore
       {editContactId && (
         <EditContactModal
+          contactId={editContactId}
           onConfirm={handleEditContact}
           onCancel={() => setEditContactId(null)}
         />
       )}
+      // @ts-ignore
       {deleteContactId && (
         <DeleteContactModal
           contactId={deleteContactId}

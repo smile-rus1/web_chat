@@ -32,3 +32,12 @@ shell:
 
 clean:
 	docker compose down -v --remove-orphans
+
+clear-all:
+	@read -p "Это удалит всё (волюмы/образы/контейнеры). Точно ли сделать это ? [y/n]: " confirm && \
+	if [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]; then \
+		docker compose down -v --rmi all --remove-orphans; \
+	else \
+		echo "Отмена"; \
+	fi
+

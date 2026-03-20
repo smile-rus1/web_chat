@@ -19,7 +19,6 @@ if __name__ == '__main__':
         app="src.main:start_app",
         host=config.web.host,
         port=config.web.port,
-        reload=True,
         factory=True,
         log_level="info",
     )
